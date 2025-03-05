@@ -26,11 +26,12 @@
 
 @theme {
   --font-display: "Inconsolata", "sans-serif"; 
-  --color-primary: #A21C1A;
+  --color-primary: #a21c1a;
   --color-font-primary: #180404;
   --color-secondary:#DD5D40;
   --color-fuxia: #FAA748;
   --color-light-pink: #f3eeedad;
+  --color-poly: rgba(223, 12, 8, 0.493);
 }
 
 /* 1. Use a more-intuitive box-sizing model */
@@ -56,10 +57,13 @@ img, picture, video, canvas, svg {
   max-width: 100%;
 }
 
-/* 6. Inherit fonts for form controls */
-input, button, textarea, select {
-  font: inherit;
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
+
 
 /* 7. Avoid text overflows */
 p, h1, h2, h3, h4, h5, h6 {
