@@ -1,24 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import "./App.css";
 import Session from "./Session";
 import Form from "./Form";
 export interface props {
-  series: number;
+  series: boolean[];
   name: string;
   muscle: string;
 }
 function App() {
   const [showForm, setShowForm] = useState(false);
-  const [workout, setWorkout] = useState<props[]>([
-    {
-      series: 4,
-      name: "squat",
-      muscle: "legs",
-    },
-  ]);
-  const handleForm = () => setShowForm(!showForm)
-  const resetWorkout = () => setWorkout([])
+  const [workout, setWorkout] = useState<props[]>([]);
+  useEffect(() => {
+    const storedWorkout = localStorage.getItem("workout");
+    if (storedWorkout) {
+      setWorkout(JSON.parse(storedWorkout));
+    }
+    console.log(storedWorkout)
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("workout", JSON.stringify(workout));
+  }, [workout]);
+  const handleForm = () => setShowForm(!showForm);
+  const resetWorkout = () => setWorkout([]);
+  const updateSeries = (index: number, newSeries: boolean[]) => {
+    const newWorkout = [...workout];
+    newWorkout[index].series = newSeries;
+    setWorkout(newWorkout);
+  };
   return (
     <div className="bg-light-pink min-h-[100vh] p-4 text-font-primary relative">
       <header className="flex justify-center">
@@ -57,13 +67,22 @@ function App() {
         </h1>
       </header>
       <main className="relative">
-      {workout.length !== 0 && <button onClick={() => resetWorkout()} className="absolute right-4 top-2 bg-fuxia py-2 px-4 rounded-md font-bold text-white cursor-pointer">Reset</button> }
+        {workout.length !== 0 && (
+          <button
+            onClick={() => resetWorkout()}
+            className="absolute right-4 top-2 bg-fuxia py-2 px-4 rounded-md font-bold text-white cursor-pointer"
+          >
+            Reset
+          </button>
+        )}
         {workout.map((e, i) => (
           <Session
             key={`${e.name}#${i}`}
             series={e.series}
             name={e.name}
             muscle={e.muscle}
+            index={i}
+            updateSeries={updateSeries}
           />
         ))}
       </main>
@@ -73,13 +92,39 @@ function App() {
       >
         <button className="cursor-pointer p-4">Add new exercise +</button>
       </footer>
-        <div className={`${showForm ? 'top-[290px] opacity-100 h-[100%]' : 'opacity-0 top-[100%] h-0'} fixed ease-in-out duration-300  left-4 right-4 bg-light-pink bg-opacity-50 z-50`}>
-        <svg onClick={handleForm} className="absolute top-2 right-2 cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#a21c1a"><path d="M18 6L6 18" stroke="#a21c1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/> <path d="M6 6L18 18" stroke="#a21c1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        <Form
-          setWorkout={setWorkout} 
-          showForm={handleForm}
-        />
-        </div>
+      <div
+        className={`${
+          showForm
+            ? "top-[290px] opacity-100 h-[100%]"
+            : "opacity-0 top-[100%] h-0"
+        } fixed ease-in-out duration-300  left-4 right-4 bg-light-pink bg-opacity-50 z-50`}
+      >
+        <svg
+          onClick={handleForm}
+          className="absolute top-2 right-2 cursor-pointer"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="#a21c1a"
+        >
+          <path
+            d="M18 6L6 18"
+            stroke="#a21c1a"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />{" "}
+          <path
+            d="M6 6L18 18"
+            stroke="#a21c1a"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <Form setWorkout={setWorkout} showForm={handleForm} />
+      </div>
     </div>
   );
 }

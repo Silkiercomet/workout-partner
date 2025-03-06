@@ -4,7 +4,11 @@ interface FormProps{
     setWorkout : React.Dispatch<React.SetStateAction<props[]>>;
     showForm : () => void
 }
-
+interface formatedProps {
+    muscle: string;
+    series: boolean[];
+    name: string;
+}
 import { useForm } from 'react-hook-form';
 
 const Form: React.FC<FormProps> = ({ setWorkout, showForm }) => {
@@ -19,7 +23,12 @@ const Form: React.FC<FormProps> = ({ setWorkout, showForm }) => {
     const muscleGroup = watch('muscle');
   
     const onSubmit = (data: any) => {
-      setWorkout(prevWorkout => [...prevWorkout, data]);
+    const formatedData: formatedProps = {
+        muscle: data.name === 'other' ? data.otherMuscleGroup : data.name,
+        series: Array(data.series).fill(false),
+        name: data.name
+    }
+    setWorkout(prevWorkout => [...prevWorkout, formatedData]);
       reset();
       showForm()
     };
@@ -29,21 +38,22 @@ const Form: React.FC<FormProps> = ({ setWorkout, showForm }) => {
       <fieldset className="border border-gray-300 p-4 rounded-md">
         <legend className="text-lg font-medium mb-2">Muscle Group</legend>
         <div className="flex items-center space-x-4 gap-2.5">
+
           <label>
             <input type="radio" {...register('muscle')} value="legs" className='hidden' />
-            <span className='py-2 px-4 bg-secondary text-white rounded-md'>Legs</span>
+            <span className={`cursor-pointer py-2 px-4 ease-in-out duration-300 text-white rounded-md ${muscleGroup === 'legs' ? 'bg-green-600' : 'bg-secondary'}`}>Legs</span>
           </label>
           <label>
             <input type="radio" {...register('muscle')} value="back" className='hidden' />
-            <span className='py-2 px-4 bg-secondary text-white rounded-md'>Back</span>
+            <span className={`cursor-pointer py-2 px-4 ease-in-out duration-300 text-white rounded-md ${muscleGroup === 'back' ? 'bg-green-600' : 'bg-secondary'}`}>Back</span>
           </label>
           <label>
             <input type="radio" {...register('muscle')} value="chest" className='hidden' />
-            <span className='py-2 px-4 bg-secondary text-white rounded-md'>Chest</span>
+            <span className={`cursor-pointer py-2 px-4 ease-in-out duration-300 text-white rounded-md ${muscleGroup === 'chest' ? 'bg-green-600' : 'bg-secondary'}`}>Chest</span>
           </label>
           <label>
             <input type="radio" {...register('muscle')} value="other" className='hidden' />
-            <span className='flex gap-2 py-2 px-4 bg-secondary text-white rounded-md'>Other
+            <span className={`cursor-pointer flex gap-2 ease-in-out duration-300 py-2 px-4 text-white rounded-md ${muscleGroup === 'other' ? 'bg-green-600' : 'bg-secondary'}`}>Other
             {muscleGroup === 'other' && (
               <input
                 type="text"
