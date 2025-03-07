@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-
-import "./App.css";
 import Session from "./Session";
 import Form from "./Form";
 export interface props {
@@ -16,7 +14,7 @@ function App() {
     if (storedWorkout) {
       setWorkout(JSON.parse(storedWorkout));
     }
-    console.log(storedWorkout)
+    console.log(storedWorkout);
   }, []);
 
   useEffect(() => {
@@ -66,7 +64,7 @@ function App() {
           </figure>
         </h1>
       </header>
-      <main className="relative">
+      <main className="relative pb-20">
         {workout.length !== 0 && (
           <button
             onClick={() => resetWorkout()}
